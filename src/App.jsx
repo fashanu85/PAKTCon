@@ -54,10 +54,11 @@ function PageBehaviour() {
   } = useLocation();
   const first = useRef(true);
   useEffect(() => {
-    const [title, description] = metadata[pathname] || ['Page Not Found | PAKT Consulting', 'Find your way back to PAKT Consulting.'];
+    const canonicalPath = pathname.replace(/\/+$/, '') || '/';
+    const [title, description] = metadata[canonicalPath] || ['Page Not Found | PAKT Consulting', 'Find your way back to PAKT Consulting.'];
     document.title = title;
     let robots = document.querySelector('meta[name=robots]');
-    if (metadata[pathname]) robots?.remove();else {
+    if (metadata[canonicalPath]) robots?.remove();else {
       if (!robots) {
         robots = document.createElement('meta');
         robots.name = 'robots';
@@ -68,7 +69,7 @@ function PageBehaviour() {
     document.querySelector('meta[name="description"]')?.setAttribute('content', description);
     document.querySelector('meta[property="og:title"]')?.setAttribute('content', title);
     document.querySelector('meta[property="og:description"]')?.setAttribute('content', description);
-    const url = `https://www.paktconsulting.co.uk${pathname === '/' ? '/' : pathname}`;
+    const url = `https://www.paktconsulting.co.uk${canonicalPath}`;
     document.querySelector('link[rel="canonical"]')?.setAttribute('href', url);
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', url);
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();else window.scrollTo(0, 0);
